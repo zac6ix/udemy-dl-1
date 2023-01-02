@@ -1,3 +1,4 @@
+// the is a rework for easy understanding & use, not built from scratch!
 package main
 
 import (
@@ -152,20 +153,22 @@ func main() {
 // Info Package info message
 func Info() {
 	info := `
-	     ****************************************************
-	     **                                                **
-	     **     ██╗░░░██╗██████╗░██╗░░░░░██╗░░██╗          **
-	     **     ██║░░░██║██╔══██╗██║░░░░░╚██╗██╔╝          **
-	     **     ██║░░░██║██║░░██║██║░░░░░░╚███╔╝░          **
-	     **     ██║░░░██║██║░░██║██║░░░░░░██╔██╗░          **
-	     **     ╚██████╔╝██████╔╝███████╗██╔╝╚██╗          **
-	     **     ░╚═════╝░╚═════╝░╚══════╝╚═╝░░╚═╝          **
-	     **        Yet Another Udemy Downloader            **
-	     ****************************************************
-							  Name : UdlX
-						   Version : 1.0
-						    Author : mr•vybes (iykex)
-						    Github : https://github.com/iykex
+                                    ...
+	                   //...the revive projekt!
+	     *****************************************************
+	     **                                                 **
+	     **        ██╗░░░██╗██████╗░██╗░░░░░██╗░░██╗        **
+	     **        ██║░░░██║██╔══██╗██║░░░░░╚██╗██╔╝        **
+	     **        ██║░░░██║██║░░██║██║░░░░░░╚███╔╝░        **
+	     **        ██║░░░██║██║░░██║██║░░░░░░██╔██╗░        **
+	     **        ╚██████╔╝██████╔╝███████╗██╔╝╚██╗        **
+	     **        ░╚═════╝░╚═════╝░╚══════╝╚═╝░░╚═╝        **
+	     **       Yet Another Udemy Course Downloader       **
+	     *****************************************************
+                            Name : UdlX
+                         Version : 1.0b
+                          Author : mr•vybes (iykex)
+                          Github : https://github.com/iykex
   `
 	fmt.Println(info)
 }
@@ -198,15 +201,15 @@ func (u *Udemy) AuthenticateToken() (bool, error) {
 		u.getAuthenticationToken()
 	}
 
-	fmt.Println("[*] : Authenticating Access Token...")
+	fmt.Println("✳️   : Authenticating Access Token...")
 	resp := u.NewRequest("HEAD", GetCoursesURL)
 	defer resp.Body.Close()
 
 	if resp.StatusCode > 299 {
-		return false, errors.New("[x] : Invalid Authentication Token")
+		return false, errors.New("❌  : Invalid Authentication Token")
 	}
 
-	fmt.Println("[+] : Succesfully Authenticated")
+	fmt.Println("➕  : Succesfully Authenticated ✅")
 	return true, nil
 }
 
@@ -217,13 +220,13 @@ func (u Udemy) GetCourses() (bool, error) {
 		return false, nil
 	}
 
-	fmt.Println("[*] : Fetching courses...")
+	fmt.Println("✳️   : Fetching courses...")
 
 	resp := u.NewRequest("GET", GetCoursesURL)
 	defer resp.Body.Close()
 
 	if resp.StatusCode > 299 {
-		return false, errors.New("[x] : Error fetching courses, try to open link in your browser \n" + GetCoursesURL)
+		return false, errors.New("❌  : Error fetching courses, try to open link in your browser \n" + GetCoursesURL)
 	}
 
 	body, _ := ioutil.ReadAll(resp.Body)
@@ -232,10 +235,10 @@ func (u Udemy) GetCourses() (bool, error) {
 	var response CourseResponse
 	json.Unmarshal(body, &response)
 
-	fmt.Println("[+] : Courses")
+	fmt.Println("➕  : Courses [ID]")
 
 	for i := range response.Results {
-		fmt.Printf("   -[%v] : %v \n", response.Results[i].ID, response.Results[i].Title)
+		fmt.Printf("   ID[%v] : %v \n", response.Results[i].ID, response.Results[i].Title)
 	}
 
 	return true, nil
@@ -252,21 +255,21 @@ func (u *Udemy) GetCourseDetail() ([]Asset, error) {
 		u.getCourseID()
 	}
 
-	fmt.Println("[*] : Fetching course lectures...")
+	fmt.Println("✳️   : Fetching course lectures...")
 
 	url := strings.Replace(GetCourseDetailURL, "{{courseID}}", u.SelectedCourseID, 1)
 	res := u.NewRequest("GET", url)
 	defer res.Body.Close()
 
 	if res.StatusCode == 404 {
-		fmt.Println("[x] : Invalid course ID")
+		fmt.Println("❌  : Invalid course ID")
 		u.SelectedCourseID = "false"
 
 		return u.GetCourseDetail()
 	}
 
 	if res.StatusCode > 299 {
-		return nil, errors.New("[x] : Error fetching course lectures, try to open link in your browser \n" + url)
+		return nil, errors.New("❌  : Error fetching course lectures, try to open link in your browser \n" + url)
 	}
 
 	body, _ := ioutil.ReadAll(res.Body)
@@ -276,11 +279,11 @@ func (u *Udemy) GetCourseDetail() ([]Asset, error) {
 
 	finalAsset := make([]Asset, len(response.Results))
 
-	fmt.Println("[+] : Lectures")
+	fmt.Println("➕  : Lectures [No.]")
 
 	for i := range response.Results {
 		if response.Results[i].Class == "lecture" && (response.Results[i].Asset.AssetType == "Video" || response.Results[i].Asset.AssetType == "File") {
-			fmt.Printf("   -[%v] : %v[%v] \n", response.Results[i].ObjectIndex, response.Results[i].Title, response.Results[i].Asset.AssetType)
+			fmt.Printf("   No.[%v] : %v[%v] \n", response.Results[i].ObjectIndex, response.Results[i].Title, response.Results[i].Asset.AssetType)
 			response.Results[i].Asset.Title = response.Results[i].Title
 			response.Results[i].Asset.ObjectIndex = response.Results[i].ObjectIndex
 			finalAsset[response.Results[i].ObjectIndex] = response.Results[i].Asset
@@ -292,7 +295,7 @@ func (u *Udemy) GetCourseDetail() ([]Asset, error) {
 
 // getCourseID get course id from user input
 func (u *Udemy) getCourseID() {
-	fmt.Print("[?] : Enter the course Id which you want to download: ")
+	fmt.Print("❓  : Enter the course ID which you want to download: ")
 	var courseID string
 	fmt.Scanln(&courseID)
 
@@ -302,7 +305,9 @@ func (u *Udemy) getCourseID() {
 // getAuthenticationToken get lectures id which needs to download
 func (u *Udemy) getAuthenticationToken() {
 	var token string
-	fmt.Print("[?] : Enter the udemy authentication token: ")
+	fmt.Print("⚠️  You must have your Udemy Access Token Ready ⚠️\n")
+
+	fmt.Print("➡️  Enter your udemy access token: ")
 	fmt.Scanln(&token)
 
 	u.AccessToken = "Bearer " + token
@@ -311,10 +316,10 @@ func (u *Udemy) getAuthenticationToken() {
 // getLecturesIDs get lectures id which needs to download
 func (u *Udemy) getLecturesIDs() {
 	var start, end int
-	fmt.Print("[?] : Enter the lecture id from start download: ")
+	fmt.Print("❓ : Enter the Lecture No. to start download from: ")
 	fmt.Scanln(&start)
 
-	fmt.Print("[?] : Enter the lecture id till you want download: ")
+	fmt.Print("❓   : Enter the Lecture No. you want end download: ")
 	fmt.Scanln(&end)
 
 	u.Start = start
@@ -324,7 +329,7 @@ func (u *Udemy) getLecturesIDs() {
 // getVideoResolution get resolution which need to download
 func (u *Udemy) getVideoResolution() {
 	var resolution string
-	fmt.Print("[?] : Enter the video Resolution(360/480/720/1080): ")
+	fmt.Print("❓   : Enter the video Resolution(360|480|720|1080): ")
 	fmt.Scanln(&resolution)
 	u.Resolution = resolution
 }
@@ -348,13 +353,13 @@ func (u *Udemy) GetDownloadLink(asset Asset) error {
 		}
 	}
 
-	fmt.Printf("[x] Don't have any valid download link for resolution %v, try with different resolution. \n", u.Resolution)
+	fmt.Printf("❌  Don't have any valid download link for resolution %v, try with different resolution. \n", u.Resolution)
 
 	if u.SessionMaxAttempt >= u.CurrentAttempt {
 		u.getVideoResolution()
 		u.GetDownloadLink(asset)
 	} else {
-		fmt.Println("[x] Max attempt exceeded, please try again.")
+		fmt.Println("❌  Max attempt exceeded, please try again.")
 		os.Exit(0)
 	}
 	return nil
@@ -381,7 +386,7 @@ func (u *Udemy) Download(downloadURL string, asset Asset) error {
 
 	out, err := os.Create(strconv.Itoa(asset.ObjectIndex) + ". " + asset.Title + ".mp4")
 	if err != nil {
-		return errors.New("[x] Error creating a new file, try to download from link" + downloadURL)
+		return errors.New("❌  Error creating a new file, try to download from link" + downloadURL)
 	}
 	defer out.Close()
 
@@ -396,7 +401,7 @@ func (u *Udemy) Download(downloadURL string, asset Asset) error {
 
 	res, err := http.Get(downloadURL)
 	if err != nil {
-		return errors.New("[x] Error in downloading video, try to download from link" + downloadURL)
+		return errors.New("❌  Error in downloading video, try to download from link" + downloadURL)
 	}
 	defer res.Body.Close()
 
@@ -407,7 +412,7 @@ func (u *Udemy) Download(downloadURL string, asset Asset) error {
 		ctx := context.Background()
 		progressChan := progress.NewTicker(ctx, r, size, 1*time.Second)
 		for p := range progressChan {
-			fmt.Printf("\r   - Downloading : %v(%.2f MB/%.2f MB)", asset.Title, BytesToMegaBytes(p.N()), BytesToMegaBytes(p.Size()))
+			fmt.Printf("\r   🔻 Downloading : %v(%.2f MB/%.2f MB)", asset.Title, BytesToMegaBytes(p.N()), BytesToMegaBytes(p.Size()))
 		}
 		s := strconv.FormatFloat(BytesToMegaBytes(size), 'f', -1, 64)
 		fmt.Println("   - Download Finished : " + asset.Title + "(" + s + "MB)")
