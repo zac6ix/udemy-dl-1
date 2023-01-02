@@ -26,7 +26,7 @@ jobs:
               dep ensure
           fi
       - name: Build
-        run: go build -o udemy-dl
+        run: go build -o udlx
       - uses: actions/checkout@v2
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
@@ -34,4 +34,4 @@ jobs:
           prerelease: true
           title: "Development Build"
           files: |
-            udemy-dl
+            udlx
