@@ -255,7 +255,7 @@ func (u *Udemy) GetCourseDetail() ([]Asset, error) {
 		u.getCourseID()
 	}
 
-	fmt.Println("✳️   : Fetching course lectures...")
+	fmt.Println("✳️  : Fetching course lectures...")
 
 	url := strings.Replace(GetCourseDetailURL, "{{courseID}}", u.SelectedCourseID, 1)
 	res := u.NewRequest("GET", url)
@@ -316,10 +316,10 @@ func (u *Udemy) getAuthenticationToken() {
 // getLecturesIDs get lectures id which needs to download
 func (u *Udemy) getLecturesIDs() {
 	var start, end int
-	fmt.Print("❓ : Enter the Lecture No. to start download from: ")
+	fmt.Print("❓  : Enter the Lecture No. to start download from: ")
 	fmt.Scanln(&start)
 
-	fmt.Print("❓   : Enter the Lecture No. you want end download: ")
+	fmt.Print("❓  : Enter the Lecture No. you want end download: ")
 	fmt.Scanln(&end)
 
 	u.Start = start
